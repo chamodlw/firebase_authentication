@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'login_signup.dart'; // Importing the new login_signup.dart file.
+import 'package:firebase_core/firebase_core.dart'; // Importing the firebase_core package.
 
-void main() {
+void main () async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(const MyApp());
 }
 
