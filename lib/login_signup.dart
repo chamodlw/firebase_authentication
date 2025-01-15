@@ -1,14 +1,26 @@
 import 'package:flutter/material.dart';
 import 'login.dart';
 import 'signup.dart';
+import '../styles/predefstyles.dart';
 
 class LoginSignupScreen extends StatelessWidget {
   const LoginSignupScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.blue, // Set the background color to blue
+    return Container(
+      decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            Color.fromRGBO(17, 142, 245, 1),
+            Color.fromARGB(255, 93, 195, 242),
+          ],
+        ),
+      ),
+      child: Scaffold(
+        backgroundColor: Colors.transparent,
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
@@ -22,8 +34,12 @@ class LoginSignupScreen extends StatelessWidget {
                 ),
               const SizedBox(height: 20),
               const Text(
-                'Welcome!',
-                style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                'WeatherWise',
+                style: TextStyle(
+                  fontFamily: 'JosefinSans', // Matches the family name in pubspec.yaml
+                  fontSize: 35,
+                  fontWeight: FontWeight.bold,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 20),
@@ -34,21 +50,26 @@ class LoginSignupScreen extends StatelessWidget {
                     MaterialPageRoute(builder: (context) => const LoginScreen()),
                   );
                 },
-                child: const Text('Get Start'),
+                child: const Text('Get Start', style: PredefStyles.bodyText),
               ),
-              const SizedBox(height: 10),
-              ElevatedButton(
+              const SizedBox(height: 8),
+                ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.transparent.withOpacity(0.1),
+                    shadowColor: Colors.transparent.withOpacity(0.1),
+                ),
                 onPressed: () {
                   Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const SignupScreen()),
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignupScreen()),
                   );
                 },
-                child: const Text('Create Account'),
-              ),
+                child: const Text('Create Account', style: PredefStyles.bodyText2, ),
+                ),
             ],
           ),
         ),
+      ),
       ),
     );
   }
