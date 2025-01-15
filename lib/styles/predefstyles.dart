@@ -7,8 +7,8 @@ class PredefStyles {
     color: Color.fromRGBO(17, 142, 245, 1),
   );
 
-  static const TextStyle heading2 = TextStyle(
-    fontSize: 20.0,
+  static const TextStyle bodyText1 = TextStyle(
+    fontSize: 16.0,
     fontWeight: FontWeight.bold,
     color: Color.fromRGBO(17, 142, 245, 1),
   );

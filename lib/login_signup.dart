@@ -42,6 +42,16 @@ class LoginSignupScreen extends StatelessWidget {
                 ),
                 textAlign: TextAlign.center,
               ),
+              const SizedBox(height: 10),
+                const Text(
+                'Forecast First, Always Prepared',
+                style: TextStyle(
+                  fontFamily: 'JosefinSans', // Matches the family name in pubspec.yaml
+                  fontSize: 18,
+                  fontWeight: FontWeight.w600,
+                ),
+                textAlign: TextAlign.center,
+              ),
               const SizedBox(height: 20),
               ElevatedButton(
                 onPressed: () {
@@ -66,6 +76,7 @@ class LoginSignupScreen extends StatelessWidget {
                 },
                 child: const Text('Create Account', style: PredefStyles.bodyText2, ),
                 ),
+                
             ],
           ),
         ),

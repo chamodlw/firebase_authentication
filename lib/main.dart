@@ -17,7 +17,7 @@ class MyApp extends StatelessWidget {
       title: 'Firebas',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromARGB(255, 33, 10, 102)),
+        colorScheme: ColorScheme.fromSeed(seedColor: const Color.fromRGBO(17, 142, 245, 1)),
         useMaterial3: true,
       ),
       home: const LoginSignupScreen(), // Set LoginSignupScreen as the initial screen.

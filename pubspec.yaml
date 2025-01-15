@@ -60,6 +60,7 @@ flutter:
     - family: JosefinSans
       fonts:
         - asset: assets/fonts/JosefinSans-Bold.ttf
+        - asset: assets/fonts/JosefinSans-SemiBold.ttf
 
 
   # The following line ensures that the Material Icons font is
