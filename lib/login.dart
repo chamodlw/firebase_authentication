@@ -163,7 +163,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   obscureText: true,
                 ),
               ),
-              if (viewInsets == 0) const SizedBox(height: 20),
+              if (viewInsets == 0) const SizedBox(height: 15),
               if (viewInsets != 0) const SizedBox(height: 10),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 28.0),
@@ -203,6 +203,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     style: const TextStyle(color: Colors.red),
                   ),
                 ),
+                if (viewInsets == 0) const SizedBox(height: 5),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 75.0),
                 child: SizedBox(
