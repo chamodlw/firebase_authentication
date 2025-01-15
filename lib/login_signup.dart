@@ -16,9 +16,9 @@ class LoginSignupScreen extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
                 ClipRRect(
-                borderRadius: BorderRadius.circular(80.0), // Set the radius here
+                borderRadius: BorderRadius.circular(100.0), // Set the radius here
                 child: Image.asset('assets/images/weather.png',
-                height: 10.0,), // Add the image here
+                height: 200.0,), // Add the image here
                 ),
               const SizedBox(height: 20),
               const Text(
