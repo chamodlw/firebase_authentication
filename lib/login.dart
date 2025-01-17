@@ -109,7 +109,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   borderRadius: BorderRadius.circular(100.0),
                   child: Image.asset(
                     'assets/images/weather.png',
-                    height: 150.0,
+                    height: 120.0,
                   ),
                 ),
               if (viewInsets != 0) const SizedBox(height: 10),
@@ -122,6 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 textAlign: TextAlign.center,
               ),
+              
               if (viewInsets == 0) const SizedBox(height: 20),
               if (viewInsets != 0) const SizedBox(height: 10),
               Padding(
