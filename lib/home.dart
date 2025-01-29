@@ -3,6 +3,8 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import 'package:fire_auth/login_signup.dart';
+import 'package:geolocator/geolocator.dart'; // Import geolocator package
+import '../styles/predefstyles.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -10,21 +12,63 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  static const String apiKey = 'cGOvygTFng63hv9oRURn0wY3knhlPNwk'; // Replace with your Tomorrow.io API key
+  static const String apiKey =
+      'cGOvygTFng63hv9oRURn0wY3knhlPNwk'; // Replace with your Tomorrow.io API key
   String temperature = 'Loading...';
   String weatherCondition = '';
   IconData weatherIcon = Icons.cloud;
+  User? user;
+  double? latitude;
+  double? longitude;
 
   @override
   void initState() {
     super.initState();
-    fetchWeather();
+    fetchLocation(); // Fetch user's location
+    getUserDetails();
   }
 
-  Future<void> fetchWeather() async {
-    double lat = 6.9271; // Colombo, Sri Lanka
-    double lon = 79.8612;
-    String url = 'https://api.tomorrow.io/v4/weather/realtime?location=$lat,$lon&apikey=$apiKey';
+  // Function to get user's current location
+  Future<void> fetchLocation() async {
+    // Check if location services are enabled
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      // If location services are disabled, show a message and return
+      setState(() {
+        temperature = 'Location services are disabled.';
+      });
+      return;
+    }
+
+    // Check location permissions
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        setState(() {
+          temperature = 'Location permission denied.';
+        });
+        return;
+      }
+    }
+
+    // Get current position (latitude and longitude)
+    Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high);
+    setState(() {
+      latitude = position.latitude;
+      longitude = position.longitude;
+    });
+
+    // Fetch weather data once location is available
+    if (latitude != null && longitude != null) {
+      fetchWeather(latitude!, longitude!);
+    }
+  }
+
+  Future<void> fetchWeather(double lat, double lon) async {
+    String url =
+        'https://api.tomorrow.io/v4/weather/realtime?location=$lat,$lon&apikey=$apiKey';
 
     try {
       final response = await http.get(Uri.parse(url));
@@ -32,7 +76,8 @@ class _HomePageState extends State<HomePage> {
         final data = json.decode(response.body);
         setState(() {
           temperature = "${data['data']['values']['temperature']}°C";
-          int weatherCode = int.parse(data['data']['values']['weatherCode'].toString());
+          int weatherCode =
+              int.parse(data['data']['values']['weatherCode'].toString());
           weatherCondition = getWeatherDescription(weatherCode);
           weatherIcon = getWeatherIcon(weatherCode);
         });
@@ -70,40 +115,87 @@ class _HomePageState extends State<HomePage> {
     return Icons.help_outline; // Unknown
   }
 
+  // Get user details from Firebase Auth
+  void getUserDetails() {
+    final currentUser = FirebaseAuth.instance.currentUser;
+    setState(() {
+      user = currentUser;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Weather Home'),
+        title: Text(' '),
+        backgroundColor: Color.fromRGBO(17, 142, 245, 1), // Set the color of the AppBar
         actions: [
           IconButton(
-            icon: Icon(Icons.logout),
-            onPressed: () {
-              FirebaseAuth.instance.signOut().then((value) {
-                Navigator.of(context).pushReplacement(
-                  MaterialPageRoute(builder: (context) => LoginSignupScreen()),
-                );
-              });
-            },
+        icon: Icon(Icons.logout),
+        onPressed: () {
+          FirebaseAuth.instance.signOut().then((value) {
+            Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+              builder: (context) => LoginSignupScreen()),
+            );
+          });
+        },
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(weatherIcon, size: 80, color: Colors.orange),
-            SizedBox(height: 10),
-            Text(
-              temperature,
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [
+              Color.fromRGBO(17, 142, 245, 1),
+              Colors.white,
+            ],
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Column(
+              children: [
+                SizedBox(height: 30),
+                Text(
+                  'WeatherWise',
+                  style: TextStyle(
+                    fontFamily: 'JosefinSans',
+                    fontSize: 35,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                // Weather display section with border
+                SizedBox(height: 20),
+                Container(
+                  decoration: BoxDecoration(
+                  border: Border.all(color: Colors.blueAccent, width: 2),
+                  borderRadius: BorderRadius.circular(10),
+                  ),
+                  padding: EdgeInsets.all(20),
+                  child: Column(
+                  children: [
+                    Icon(weatherIcon, size: 80, color: Colors.orange),
+                    SizedBox(height: 10),
+                    Text(
+                    temperature,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                    weatherCondition.isNotEmpty ? '$weatherCondition Time' : '',
+                    style: TextStyle(fontSize: 18),
+                    ),
+                  ],
+                  ),
+                ),
+              ],
             ),
-            SizedBox(height: 5),
-            Text(
-              'Condition: $weatherCondition',
-              style: TextStyle(fontSize: 18),
-            ),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: BottomAppBar(
