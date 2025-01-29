@@ -159,24 +159,24 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 20.0),
             child: Column(
               children: [
-                SizedBox(height: 30),
+                SizedBox(height: 15),
                 Text(
-                  'WeatherWise',
+                  'Current Report',
                   style: TextStyle(
                     fontFamily: 'JosefinSans',
-                    fontSize: 35,
+                    fontSize: 30,
                     fontWeight: FontWeight.bold,
                   ),
                   textAlign: TextAlign.center,
                 ),
                 // Weather display section with border
-                SizedBox(height: 20),
+                SizedBox(height: 30),
                 Container(
                   decoration: BoxDecoration(
-                  border: Border.all(color: Colors.blueAccent, width: 2),
+                  border: Border.all(color: const Color.fromARGB(255, 206, 203, 198), width: 2),
                   borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.all(20),
+                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
                   child: Column(
                   children: [
                     Icon(weatherIcon, size: 80, color: Colors.orange),
