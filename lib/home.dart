@@ -20,6 +20,10 @@ class _HomePageState extends State<HomePage> {
   User? user;
   double? latitude;
   double? longitude;
+  String humidity = 'Loading...';
+  String cloudCover = 'Loading...';
+  String windSpeed = 'Loading...';
+  bool showMoreData = false;
 
   @override
   void initState() {
@@ -123,6 +127,37 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  Future<void> fetchAdditionalWeatherData() async {
+    String url =
+        'https://api.tomorrow.io/v4/weather/realtime?location=$latitude,$longitude&apikey=$apiKey';
+
+    try {
+      final response = await http.get(Uri.parse(url));
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        setState(() {
+          temperature = "${data['data']['values']['temperature']}°C";
+          int weatherCode =
+              int.parse(data['data']['values']['weatherCode'].toString());
+          weatherCondition = getWeatherDescription(weatherCode);
+          weatherIcon = getWeatherIcon(weatherCode);
+          humidity = "${data['data']['values']['humidity']}%";
+          cloudCover = "${data['data']['values']['cloudCover']}%";
+          windSpeed = "${data['data']['values']['windSpeed']} km/h";
+          showMoreData = true;
+        });
+      } else {
+        setState(() {
+          temperature = 'Error loading data';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        temperature = 'Failed to fetch data';
+      });
+    }
+  }
+  
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -176,7 +211,7 @@ class _HomePageState extends State<HomePage> {
                   border: Border.all(color: const Color.fromARGB(255, 206, 203, 198), width: 2),
                   borderRadius: BorderRadius.circular(10),
                   ),
-                  padding: EdgeInsets.symmetric(horizontal: 25, vertical: 15),
+                  padding: EdgeInsets.symmetric(horizontal: 35, vertical: 15),
                   child: Column(
                   children: [
                     Icon(weatherIcon, size: 80, color: Colors.orange),
@@ -190,9 +225,83 @@ class _HomePageState extends State<HomePage> {
                     weatherCondition.isNotEmpty ? '$weatherCondition Time' : '',
                     style: TextStyle(fontSize: 18),
                     ),
+                    
                   ],
                   ),
                 ),
+                SizedBox(height: 10),
+                    ElevatedButton(
+                      onPressed: () async {
+                        // display additional weather data
+                        await fetchAdditionalWeatherData();
+                        if (showMoreData) {
+                          showDialog(
+                            context: context,
+                            builder: (BuildContext context) {
+                              return AlertDialog(
+                                title: Center(
+                                  child: Text(
+                                  'Weather Report',
+                                  style: PredefStyles.heading1,
+                                  ),
+                                ),
+                                content: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                  Row(
+                                    children: [
+                                    Icon(Icons.thermostat, color: Colors.orange),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'Temperature: $temperature',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                    Icon(Icons.water_drop, color: Colors.blue),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'Humidity: $humidity',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                    Icon(Icons.cloud, color: Colors.grey),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'Cloud Cover: $cloudCover',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 10),
+                                  Row(
+                                    children: [
+                                    Icon(Icons.air, color: Colors.green),
+                                    SizedBox(width: 10),
+                                    Text(
+                                      'Wind Speed: $windSpeed',
+                                      style: TextStyle(fontSize: 18),
+                                    ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 15),
+                                  ],
+                                ),
+                                
+                              );
+                            },
+                          );
+                        }
+                      },
+                      child: Text('More', style: TextStyle(color: Colors.blue),),
+                    ),
               ],
             ),
           ),
